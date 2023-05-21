@@ -24,7 +24,7 @@ class Display:
         upper_button = tk.Button(
             self.root,
             text="upper",
-            command=self.convertUpper
+            command=self.convert_upper
         )
         upper_button.grid(
             row=0,
@@ -34,7 +34,7 @@ class Display:
         lower_button = tk.Button(
             self.root,
             text="lower",
-            command=self.convertLower
+            command=self.convert_lower
         )
         lower_button.grid(
             row=0,
@@ -55,14 +55,14 @@ class Display:
             column=3
         )
 
-    def convertUpper(self):
+    def convert_upper(self):
         s = pyperclip.paste()
         pyperclip.copy(s.upper())
         print(s.upper())
         self.clipboard_text.delete("1.0", "end")
         self.clipboard_text.insert(tk.END, s)
 
-    def convertLower(self):
+    def convert_lower(self):
         s = pyperclip.paste()
         pyperclip.copy(s.lower())
         print(s.lower())
