@@ -1,76 +1,75 @@
 # CapsControl quick clipboard text manipulator.
-import tkinter
+
 import pyperclip
-
-window = tkinter.Tk()
-window.geometry("600x400")
-window.resizable(False, False)
-window.title("CapsControl")
+import tkinter as tk
 
 
-window.rowconfigure(0, weight=1)
-window.rowconfigure(1, weight=2)
+class Display:
+    def __init__(self):
+        self.root = tk.Tk()
 
-clipboard_text = tkinter.Text(window, height=20, width=40)
-def convertUpper():
-    s = pyperclip.paste()
-    pyperclip.copy(s.upper())
-    print(s.upper())
-    clipboard_text.delete("1.0", "end")
-    clipboard_text.insert(tkinter.END, s)
+        self.root.geometry("600x400")
+        self.root.resizable(False, False)
+        self.root.title("CapsControl")
 
-def convertLower():
-    s = pyperclip.paste()
-    pyperclip.copy(s.lower())
-    print(s.lower())
-    clipboard_text.delete("1.0", "end")
-    clipboard_text.insert(tkinter.END, s)
+        self.root.rowconfigure(0, weight=1)
+        self.root.rowconfigure(1, weight=2)
 
-upper_button = tkinter.Button(
-    window,
-    text="upper",
-    command=convertUpper
-)
+        self.clipboard_text = tk.Text(self.root, height=20, width=40)
 
-upper_button.grid(
-    row=0,
-    column=1
-)
+        self.menu()
+        self.root.mainloop()
 
-lower_button = tkinter.Button(
-    window,
-    text="lower",
-    command=convertLower
-)
+    def menu(self):
+        upper_button = tk.Button(
+            self.root,
+            text="upper",
+            command=self.convertUpper
+        )
+        upper_button.grid(
+            row=0,
+            column=1
+        )
 
-lower_button.grid(
-    row=0,
-    column=2
-)
+        lower_button = tk.Button(
+            self.root,
+            text="lower",
+            command=self.convertLower
+        )
+        lower_button.grid(
+            row=0,
+            column=2
+        )
+        self.clipboard_text.grid(
+            columnspan=6,
+            row=1,
+            column=1
+        )
+        exit_button = tk.Button(
+            self.root,
+            text='Exit',
+            command=lambda: self.root.quit()
+        )
+        exit_button.grid(
+            row=0,
+            column=3
+        )
+
+    def convertUpper(self):
+        s = pyperclip.paste()
+        pyperclip.copy(s.upper())
+        print(s.upper())
+        self.clipboard_text.delete("1.0", "end")
+        self.clipboard_text.insert(tk.END, s)
+
+    def convertLower(self):
+        s = pyperclip.paste()
+        pyperclip.copy(s.lower())
+        print(s.lower())
+        self.clipboard_text.delete("1.0", "end")
+        self.clipboard_text.insert(tk.END, s)
 
 
-clipboard_text.grid(
-    columnspan=6,
-    row=1,
-    column=1
-)
-
-
-exit_button = tkinter.Button(
-    window,
-    text='Exit',
-    command=lambda: window.quit()
-)
-exit_button.grid(
-    row=0,
-    column=3
-)
-def main():
-    window.mainloop()
-
-    convertUpper()
-
-
-main()
+display = Display()
 
 # end of file
