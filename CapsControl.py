@@ -19,10 +19,10 @@ class Display:
         self.root.rowconfigure(3, weight=2)
 
         self.clipboard_text = tk.Text(self.root, height=10, width=20)
+        self.currentSaved = pyperclip.paste()
+        self.clipboard_text.insert(tk.END, self.currentSaved)
 
         self.history = Stack()
-
-        self.currentSaved = pyperclip.paste()
         self.lastCommand = None
 
         self.menu()
@@ -115,22 +115,12 @@ class Display:
             column=3
         )
 
-        save_clipboard = tk.Button(
+        undo_button = tk.Button(
             self.root,
-            text="save",
-            command=self.save_clipboard
+            text='undo',
+            command=self.undo_last
         )
-        save_clipboard.grid(
-            row=0,
-            column=5
-        )
-
-        load_saved = tk.Button(
-            self.root,
-            text="load",
-            command=self.load_saved
-        )
-        load_saved.grid(
+        undo_button.grid(
             row=1,
             column=5
         )
@@ -157,6 +147,15 @@ class Display:
         self.clipboard_text.delete("1.0", "end")
         self.clipboard_text.insert(tk.END, s)
 
+    def undo_last(self):
+
+        if self.history.is_empty():
+            return
+
+        s = self.history.peek()
+        pyperclip.copy(s)
+        self.set_clipboard(s)
+        self.history.pop()
 
     def convert_upper(self):
         if self.lastCommand == "convert_upper":
@@ -167,7 +166,6 @@ class Display:
         s = pyperclip.paste().upper()
         self.set_clipboard(s)
 
-
     def convert_lower(self):
         if self.lastCommand == "convert_lower":
             return
@@ -176,14 +174,6 @@ class Display:
 
         s = pyperclip.paste().lower()
         self.set_clipboard(s)
-
-    def save_clipboard(self):
-
-        self.currentSaved = pyperclip.paste()
-
-    def load_saved(self):
-        self.clipboard_text.delete("1.0", "end")
-        self.clipboard_text.insert(tk.END, self.currentSaved)
 
     def remove_punctuation(self):
         if self.lastCommand == "remove_punctuation":
@@ -211,6 +201,7 @@ class Display:
 
         s = re.sub(r'\s', '', pyperclip.paste())
         self.set_clipboard(s)
+
     def word_list_view(self):
         if self.lastCommand == "word_list_view":
             return
@@ -228,6 +219,7 @@ class Display:
 
         s = re.sub(r' +', ' ', re.sub(r'\n+', ' ', pyperclip.paste()))
         self.set_clipboard(s)
+
     def title_casing(self):
         if self.lastCommand == "title_casing":
             return
@@ -236,6 +228,7 @@ class Display:
 
         s = pyperclip.paste().title()
         self.set_clipboard(s)
+
 
 class Stack:
     def __init__(self):
@@ -259,6 +252,7 @@ class Stack:
 
     def size(self):
         return len(self.stack)
+
 
 display = Display()
 
