@@ -142,13 +142,11 @@ class Display:
         )
 
     def set_clipboard(self, s):
-
         pyperclip.copy(s)
         self.clipboard_text.delete("1.0", "end")
         self.clipboard_text.insert(tk.END, s)
 
     def undo_last(self):
-
         if self.history.is_empty():
             return
 
